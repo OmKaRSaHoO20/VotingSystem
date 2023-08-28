@@ -1,18 +1,21 @@
 const fs = require("fs");
 const path = require("path");
-//
+
 const VotingSystem = artifacts.require("VotingSystem");
 
 // export default (deployer) => {
 //   deployer.deploy(VotingSystem);
 // };
 
-module.exports = async function (deployer) {
+module.exports = async function (deployer, accounts) {
+  const adminAddress = accounts[0];
+
   await deployer.deploy(VotingSystem, { gas: 6721975 });
   const votingSystemInstance = await VotingSystem.deployed();
 
   const contractData = {
-    address: votingSystemInstance.address,
+    adminAddress: adminAddress,
+    contractAddress: votingSystemInstance.address,
     abi: VotingSystem.abi,
   };
 

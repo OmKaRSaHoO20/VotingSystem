@@ -1,12 +1,24 @@
 import Web3 from "web3";
-import { abi, address } from "../../credentials/data";
+import { abi, contractAddress } from "../../credentials/data";
+
+export const web3 = new Web3("http://localhost:7545");
 
 export default async function initWeb3() {
-  const web3 = new Web3("http://localhost:7545");
-
-  const contract = new web3.eth.Contract(abi, address);
-
+  const contract = new web3.eth.Contract(abi, contractAddress);
   return contract;
+}
+
+export async function getFirstAccount() {
+  try {
+    const accounts = await web3.eth.getAccounts();
+    if (accounts.length > 0) {
+      return accounts[0];
+    } else {
+      console.log("No accounts found in Ganache.");
+    }
+  } catch (error) {
+    console.error("Error fetching accounts:", error);
+  }
 }
 
 // const web3 = new Web3(new Web3.providers.HttpProvider("http://remix"));

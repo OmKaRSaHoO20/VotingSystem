@@ -1,5 +1,6 @@
 module.exports = {
-  "address": "0x02272944bb9Cd3Fa42e38f801998d19B87422534",
+  "adminAddress": "0xDC9A97f77e6e2054D796D31452a203b6f81F932e",
+  "contractAddress": "0x9889Bbb4F272f3a4A564F2FA69331e6F6c79671a",
   "abi": [
     {
       "inputs": [],
@@ -156,35 +157,6 @@ module.exports = {
           "type": "uint256"
         }
       ],
-      "name": "vote",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x0121b93f"
-    },
-    {
-      "inputs": [],
-      "name": "getCandidateCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true,
-      "signature": "0x30a56347"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_candidateId",
-          "type": "uint256"
-        }
-      ],
       "name": "getCandidate",
       "outputs": [
         {
@@ -197,6 +169,20 @@ module.exports = {
       "type": "function",
       "constant": true,
       "signature": "0x35b8e820"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_candidateId",
+          "type": "uint256"
+        }
+      ],
+      "name": "vote",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x0121b93f"
     },
     {
       "inputs": [
