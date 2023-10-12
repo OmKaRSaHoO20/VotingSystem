@@ -1,6 +1,6 @@
 module.exports = {
-  "adminAddress": "0xDC9A97f77e6e2054D796D31452a203b6f81F932e",
-  "contractAddress": "0x9889Bbb4F272f3a4A564F2FA69331e6F6c79671a",
+  "adminAddress": "d",
+  "contractAddress": "0xefaFe5c68bAB901005bF5D5AE581f4cFA987A961",
   "abi": [
     {
       "inputs": [],

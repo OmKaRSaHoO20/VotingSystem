@@ -3,6 +3,7 @@ import Header from "./components/header";
 import initWeb3, { getFirstAccount } from "./components/web3_connect/connect";
 import Login from "./pages/LoginPage/Index";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import LoginPage from "./pages/Auth";
 
 function App() {
   const [methods, setMethods] = React.useState(null);
@@ -41,9 +42,10 @@ function App() {
           ) : (
             <Routes>
               <Route
-                path="/"
+                path="/admin-panel"
                 element={<Login methods={methods} accountData={accountData} />}
               />
+              <Route path="/" element={<LoginPage />} />
             </Routes>
           )}
         </div>

@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { toast } from "react-toastify";
 
 const Login = (props) => {
   const [candidatesList, setCandidatesList] = React.useState([]);
@@ -88,6 +89,8 @@ const Login = (props) => {
   const handleVote = async () => {
     try {
       if (selectedCandidateIndex !== null) {
+        const candidateName = candidatesList[selectedCandidateIndex];
+
         await props.methods.vote(selectedCandidateIndex).send({
           from: props.accountData,
           gas: 500000,
@@ -97,24 +100,54 @@ const Login = (props) => {
         newVotes[selectedCandidateIndex] = await props.methods
           .getVoteCount(selectedCandidateIndex)
           .call({ from: props.accountData });
+
         setCandidateVotes(newVotes);
+
         const newTotalVotes = newVotes.reduce(
           (sum, voteCount) => sum + parseInt(voteCount),
           0
         );
+
+        toast.success(`Vote casted for ${candidateName}!!`, {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+
         setTotalVotes(newTotalVotes);
         setSelectedCandidateIndex(null);
         handleClose();
       }
     } catch (error) {
-      console.error("Error voting:", error);
+      toast.error(error, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       handleClose();
     }
   };
 
   return (
     <Box marginTop={25}>
-      <Box style={{ height: "auto", width: "80%", margin: "auto" }}>
+      <Box
+        style={{
+          height: "auto",
+          width: "80%",
+          margin: "auto",
+          paddingBottom: "5rem",
+        }}
+      >
         <Box sx={{ marginBottom: 5, fontSize: 36 }}>All Candidates</Box>
         <Paper>
           <TableContainer>

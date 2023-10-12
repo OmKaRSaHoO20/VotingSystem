@@ -14,6 +14,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import AddCircleOutlineTwoToneIcon from "@mui/icons-material/AddCircleOutlineTwoTone";
 import CloseIcon from "@mui/icons-material/Close";
+import { auth } from "../../firebase";
+import LoginIcon from "@mui/icons-material/Login";
+import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { toast } from "react-toastify";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -27,6 +32,8 @@ const AppBar = styled(MuiAppBar, {
 const Header = (props) => {
   const [open, setOpen] = React.useState(false);
   const [candidate, setCandidate] = React.useState("");
+  const navigate = useNavigate();
+  const [user, setUser] = React.useState(null);
 
   const handleAddCandidate = async () => {
     try {
@@ -35,23 +42,32 @@ const Header = (props) => {
           .addCandidate(candidate)
           .send({ from: props.accountData, gas: 500000 });
       }
+      toast.success("Candidate added successfully!!", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setCandidate("");
       setOpen(false);
+      window.location.reload();
     } catch (error) {
-      console.error("Error adding candidate:", error);
+      toast.error(error, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
-
-  // const handle = async () => {
-  //   await props.methods
-  //     .candidatesCount()
-  //     .call({ from: props.accountData })
-  //     .then((result) => {
-  //       console.log("Candidates count:", result);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error getting candidates count:", error);
-  //     });
-  // };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -60,6 +76,46 @@ const Header = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate("/");
+      toast.success("Logged Out successfully!!", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (e) {
+      toast.error(e, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  React.useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else navigate("/");
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -75,20 +131,49 @@ const Header = (props) => {
                 Voting System
               </Typography>
             </Box>
-            <Box>
-              <Button
-                variant="outlined"
-                style={{
-                  color: "white",
-                  borderColor: "white",
-                  marginRight: 16,
-                }}
-                onClick={handleClickOpen}
-              >
-                <AddCircleOutlineTwoToneIcon />
-                Add Candidate
-              </Button>
-            </Box>
+            {!user ? (
+              <Box sx={{ display: "flex" }}>
+                <Button
+                  variant="outlined"
+                  style={{
+                    color: "white",
+                    borderColor: "white",
+                    marginRight: 16,
+                  }}
+                  onClick={handleClickOpen}
+                >
+                  <LoginIcon />
+                  Login
+                </Button>
+              </Box>
+            ) : (
+              <Box sx={{ display: "flex" }}>
+                <Button
+                  variant="outlined"
+                  style={{
+                    color: "white",
+                    borderColor: "white",
+                    marginRight: 16,
+                  }}
+                  onClick={handleClickOpen}
+                >
+                  <AddCircleOutlineTwoToneIcon />
+                  Add Candidate
+                </Button>
+                <Button
+                  variant="outlined"
+                  style={{
+                    color: "white",
+                    borderColor: "white",
+                    marginRight: 16,
+                  }}
+                  onClick={handleLogout}
+                >
+                  <LogoutIcon />
+                  LogOut
+                </Button>
+              </Box>
+            )}
           </Box>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle
@@ -125,7 +210,9 @@ const Header = (props) => {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleAddCandidate}>Add</Button>
+              <Button type="submit" onClick={handleAddCandidate}>
+                Add
+              </Button>
             </DialogActions>
           </Dialog>
         </Toolbar>
